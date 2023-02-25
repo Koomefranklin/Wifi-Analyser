@@ -60,16 +60,16 @@ except FileNotFoundError:
 while True:
     Date = datetime.date.today()
     Time = datetime.datetime.now().time().strftime("%H: %M: %S")
-    def append():
+    def append(data):
         with open(filename,"a") as statsfile:
             csvwriter = csv.writer(statsfile)
-            return csvwriter
+            csvwriter.writerow(data)
     try:
         ssid, signal = wifi()
         packet_loss, latency = ping("google.com")
-        append().writerow([ssid, Date, Time, signal, "up", packet_loss, latency])
+        append([ssid, Date, Time, signal, "up", packet_loss, latency])
     except TypeError:
-        append().writerow([ssid, Date, Time, signal, "down"])
+        append([ssid, Date, Time, signal, "down"])
     except AttributeError:
-        append().writerow(["Disconnected", Date, Time])
+        append(["Disconnected", Date, Time])
     time.sleep(100)
