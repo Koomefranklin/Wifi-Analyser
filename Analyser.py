@@ -27,12 +27,11 @@ num_total_connected_minutes = time_diffs.resample('1H').sum() - disonnected_minu
 # Calculate the uptime percentage for each hour
 uptime_percentage = num_uptime_minutes / num_total_connected_minutes * 100
 
-# Print the average uptime percentage for the entire period
-print("Average uptime percentage: {:.2f}%".format(uptime_percentage.mean()))
-
 #plot graph of status against time
 plt.plot(df.index, df['Status'])
 
+# Print the average uptime percentage for the entire period
+plt.text("Average uptime percentage: {:.2f}%".format(uptime_percentage.mean()))
 # Set the x and y-axis labels
 plt.xlabel('Time')
 plt.ylabel('Status')

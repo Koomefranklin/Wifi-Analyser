@@ -14,32 +14,31 @@ import datetime
 import time
 import re
 
-#function to check and return the ssid and signal strength of the connected wifi using netsh command
+#function to check and return the ssid and signal strength of the connected wifi using iwconfig
 def wifi():
-    result = subprocess.check_output(['netsh', 'wlan', 'show', 'interface'])
+    result = subprocess.check_output(['iwconfig','wlan0'])
     result = result.decode('utf-8')
-    result = result.replace('\r', '')
 
     #regular expression(regex) is used to search within the returned string 
     #the returned string is striped off whitespaces
-    match_name = re.search('SSID (.*?)\n', result)
-    ssid = match_name.group(1).strip(' :')
-    match_signal = re.search('Signal(.*?)%', result)
-    signal = match_signal.group(1).strip(' :')
+    match_name = re.search('ESSID:"(.*?)"', result)
+    ssid = match_name.group(1)
+    match_signal = re.search('Signal level=(.*?)dBm', result)
+    signal_level = int(match_signal.group(1).strip())
+    signal = min(max(signal_level + 100, 0), 100)
 
     return ssid, signal
 
 #function for trying to ping and return the packet loss and latency of the network
 def ping(host):
     try:
-        output = subprocess.check_output(['ping', '-n', '5', '-w', '1000', host])
+        output = subprocess.check_output(['ping', '-c', '5', '-W', '1', host])
         output = output.decode('utf-8')
-        output = output.replace('\r', '')
 
-        match_loss = re.search('\d+%\ loss', output)
-        packet_loss = int(match_loss.group().strip(' loss%'))
-        match_latency = re.search('Average = \d+', output)
-        latency = int(match_latency.group().split('=')[1].strip())
+        match_loss = re.search('\d+%\ packet loss', output)
+        packet_loss = int(match_loss.group().strip(' packet loss%'))
+        match_latency = re.search('avg(.*?)ms', output)
+        latency = float(match_latency.group(1).split('=')[1].split('/')[1].strip())
 
         return packet_loss, latency
     except subprocess.CalledProcessError:
