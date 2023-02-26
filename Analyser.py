@@ -21,7 +21,7 @@ time_diffs = df.index.to_series().diff().dt.total_seconds() / 60
 
 # Calculate the number of uptime minutes and total minutes removing the time it was disconnected
 num_uptime_minutes = (df['Status'] == 'up').resample('1H').sum()
-disonnected_minutes = (df['Status'] == 'Disconnected').resample('1H').sum()
+disonnected_minutes = (df['Status'] == 'disconnected').resample('1H').sum()
 num_total_connected_minutes = time_diffs.resample('1H').sum() - disonnected_minutes
 
 # Calculate the uptime percentage for each hour
