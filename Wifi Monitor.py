@@ -56,10 +56,10 @@ except FileNotFoundError:
         csvwriter = csv.writer(newfile) 
         csvwriter.writerow(header)
 
-#run the script adding  the values to the csv at intervals of 100 seconds
+#run the script adding  the values to the csv at intervals of 60 seconds
 while True:
     Date = datetime.date.today()
-    Time = datetime.datetime.now().time().strftime("%H: %M: %S")
+    Time = datetime.datetime.now().time().strftime("%H:%M:%S")
     def append(data):
         with open(filename,"a") as statsfile:
             csvwriter = csv.writer(statsfile)
@@ -71,5 +71,5 @@ while True:
     except TypeError:
         append([ssid, Date, Time, signal, "down"])
     except AttributeError:
-        append(["Disconnected", Date, Time])
-    time.sleep(100)
+        append(["None", Date, Time, 0, "Disconnected"])
+    time.sleep(60)
